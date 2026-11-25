@@ -1,0 +1,223 @@
+CAPI=2:
+
+name : ::top_attacker:0
+description : top_attacker
+
+
+targets :
+  default:
+    filesets :
+      - rtl_top
+      - wb_intercon_dep
+
+    generate :
+      - wb_intercon_attacker : {output_file: wb_intercon_mitm.v, module_name: wb_intercon_mitm}
+
+  synth_sv_basys3 :
+
+    toplevel  : top_attacker
+
+    filesets  :
+      - wb_intercon_dep
+      - rtl_top
+      - basys3
+
+    parameters:
+     - F_MHZ=100
+     - BAUDIOS=1000000
+     - UART_FIFO_DEPTH=16
+     - UART_CAPTURER_WB_ADDR_SIZE=8
+     - UART_CAPTURER_WB_ADDR=0x200
+     - UART_SERVO_WB_ADDR_SIZE=8
+     - UART_SERVO_WB_ADDR=0x400
+     - IMPOSTOR_WB_ADDR_SIZE=8
+     - IMPOSTOR_WB_ADDR=0x600
+     - SHAPER_WB_ADDR_SIZE=8
+     - SHAPER_WB_ADDR=0x800
+     - MAX_NUM_PARAMETERS_ALLOWED=8
+     - FILE_MEM=/home/germancq/estancia_huelva/dynamixel_SV_wishbone/dynamixel/memory.mem
+     - SHAPER_FILE_MEM=/home/germancq/estancia_huelva/dynamixel_SV_wishbone/manInTheMiddle/memory.mem
+     - WB_DATA=32
+     
+
+    generate :
+      - wb_intercon_attacker : {output_file: wb_intercon_mitm.v, module_name: wb_intercon_mitm}
+
+    default_tool : vivado
+
+    tools:
+      vivado:
+        part : xc7a35tcpg236-1
+
+  synt_sv_basys3_docker:
+
+    toplevel  : top_attacker
+
+    filesets  :
+      - wb_intercon_dep_docker
+      - rtl_top_docker
+      - basys3_docker
+
+    parameters:
+     - F_MHZ=100
+     - BAUDIOS=1000000
+     - UART_FIFO_DEPTH=16
+     - UART_CAPTURER_WB_ADDR_SIZE=8
+     - UART_CAPTURER_WB_ADDR=0x200
+     - UART_SERVO_WB_ADDR_SIZE=8
+     - UART_SERVO_WB_ADDR=0x400
+     - IMPOSTOR_WB_ADDR_SIZE=8
+     - IMPOSTOR_WB_ADDR=0x600
+     - SHAPER_WB_ADDR_SIZE=8
+     - SHAPER_WB_ADDR=0x800
+     - MAX_NUM_PARAMETERS_ALLOWED=8
+     - FILE_MEM=/work/dynamixel/memory.mem
+     - SHAPER_FILE_MEM=/work/manInTheMiddle/memory.mem
+     - WB_DATA=32
+     
+
+    generate :
+      - wb_intercon_attacker : {output_file: wb_intercon_mitm.v, module_name: wb_intercon_mitm}
+
+    default_tool : vivado
+
+    tools:
+      vivado:
+        part : xc7a35tcpg236-1
+
+filesets :
+   rtl_top :
+
+    depend :
+      - uart_half_duplex_wb 
+      - ctrl_attacker
+      - uart_wb
+      - ax12a
+      - shaper
+
+    file_type : verilogSource
+
+    files :
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/manInTheMiddle/top_attacker.sv
+
+
+
+
+   basys3 :
+    file_type : xdc
+    files :
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/manInTheMiddle/basys.xdc
+
+   wb_intercon_dep:
+    depend:
+      [wb_intercon]
+
+   rtl_top_docker :
+    depend :
+      - uart_half_duplex_wb 
+      - ctrl_attacker
+      - uart_wb
+      - ax12a
+      - shaper
+
+    file_type : verilogSource
+
+    files :
+      - /work/manInTheMiddle/top_attacker.sv
+
+
+
+
+   basys3_docker :
+    file_type : xdc
+    files :
+      - /work/manInTheMiddle/basys.xdc
+
+   wb_intercon_dep_docker:
+    depend:
+      [wb_intercon]
+
+parameters:
+  F_MHZ :
+    datatype : int
+    paramtype : vlogparam
+  BAUDIOS :
+    datatype : int
+    paramtype : vlogparam
+  UART_FIFO_DEPTH :
+    datatype : int
+    paramtype : vlogparam
+  UART_CAPTURER_WB_ADDR_SIZE :
+    datatype : int
+    paramtype : vlogparam
+  UART_CAPTURER_WB_ADDR :
+    datatype : int
+    paramtype : vlogparam
+  UART_SERVO_WB_ADDR_SIZE :
+    datatype : int
+    paramtype : vlogparam
+  UART_SERVO_WB_ADDR :
+    datatype : int
+    paramtype : vlogparam
+  IMPOSTOR_WB_ADDR_SIZE :
+    datatype : int
+    paramtype : vlogparam
+  IMPOSTOR_WB_ADDR :
+    datatype : int
+    paramtype : vlogparam
+  SHAPER_WB_ADDR_SIZE :
+    datatype : int
+    paramtype : vlogparam
+  SHAPER_WB_ADDR :
+    datatype : int
+    paramtype : vlogparam
+  MAX_NUM_PARAMETERS_ALLOWED :
+    datatype : int
+    paramtype : vlogparam
+  FILE_MEM :
+    datatype : file
+    paramtype : vlogparam
+  SHAPER_FILE_MEM :
+    datatype : file
+    paramtype : vlogparam
+  WB_DATA :
+    datatype : int
+    paramtype : vlogparam
+
+generate:
+  wb_intercon_attacker:
+    generator : wb_intercon_gen
+    parameters:
+      masters:
+        mitm_ctrl:
+          slaves:
+            - mitm_servo 
+            - mitm_capturer 
+            - mitm_impostor
+            - mitm_shaper
+
+      slaves:
+        mitm_servo:
+          datawidth: 32
+          offset : 0x400
+          size : 16
+
+        mitm_capturer:
+          datawidth: 32
+          offset: 0x200
+          size: 16 
+
+        mitm_impostor:
+          datawidth: 32
+          offset: 0x600
+          size: 16
+
+        mitm_shaper:
+          datawidth: 32
+          offset: 0x800
+          size: 16
+        
+
+        
+
+

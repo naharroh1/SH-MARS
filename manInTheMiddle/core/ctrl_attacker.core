@@ -1,0 +1,152 @@
+CAPI=2:
+
+name : ::ctrl_attacker:1
+description : ctrl_attacker 
+
+
+targets:
+  default:
+    filesets:
+      - rtl
+
+  synt_sv_basys3:
+    default_tool: vivado
+    filesets:
+      - rtl
+      - basys3
+    parameters:
+      - WB_DATA=32
+      - UART_SERVO_ADDR=400
+      - UART_CAPTURER_ADDR=800
+      - IMPOSTOR_ADDR=600
+      - SHAPER_ADDR=200
+      - NUM_MODES=4
+    toplevel: ctrl_attacker
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+
+  sim:
+    flow : sim
+    flow_options:
+      tool : icarus 
+      iverilog_options : [-g2012]
+      cocotb_module : ctrl_attacker_test
+      timescale : 1ns/1ns
+      vcs_options : [-timescale=1ns/1ns] 
+    filesets : [rtl, cocotb]
+    toplevel : ctrl_attacker 
+    parameters :
+      - WB_DATA=32
+      - UART_SERVO_ADDR=400
+      - UART_CAPTURER_ADDR=800
+      - IMPOSTOR_ADDR=600
+      - SHAPER_ADDR=200
+      - NUM_MODES=4
+
+  synt_sv_basys3_docker:
+    default_tool: vivado
+    filesets:
+      - rtl_docker
+      - basys3_docker
+    parameters:
+      - WB_DATA=32
+      - UART_SERVO_ADDR=400
+      - UART_CAPTURER_ADDR=800
+      - IMPOSTOR_ADDR=600
+      - SHAPER_ADDR=200
+      - NUM_MODES=4
+    toplevel: ctrl_attacker
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+
+  sim_docker:
+    flow : sim
+    flow_options:
+      tool : icarus 
+      iverilog_options : [-g2012]
+      cocotb_module : ctrl_attacker_test
+      timescale : 1ns/1ns
+      vcs_options : [-timescale=1ns/1ns] 
+    filesets : [rtl_docker, cocotb_docker]
+    toplevel : ctrl_attacker 
+    parameters :
+      - WB_DATA=32
+      - UART_SERVO_ADDR=400
+      - UART_CAPTURER_ADDR=800
+      - IMPOSTOR_ADDR=600
+      - SHAPER_ADDR=200
+      - NUM_MODES=4
+
+parameters :
+  WB_DATA :
+    datatype : int
+    paramtype : generic
+  UART_CAPTURER_ADDR :
+    datatype : int
+    paramtype : generic
+  UART_SERVO_ADDR :
+    datatype : int
+    paramtype : generic
+  IMPOSTOR_ADDR :
+    datatype : int
+    paramtype : generic
+  SHAPER_ADDR :
+    datatype : int
+    paramtype : generic
+  NUM_MODES :
+    datatype : int
+    paramtype : generic
+
+filesets:
+
+  rtl:
+    file_type: verilogSource
+    files:
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/manInTheMiddle/hdl/ctrl_attacker.sv
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/manInTheMiddle/hdl/attack_mode_0.sv
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/manInTheMiddle/hdl/attack_mode_1.sv
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/manInTheMiddle/hdl/attack_mode_2.sv
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/manInTheMiddle/hdl/attack_mode_3.sv
+    depend:
+      - stack
+      - counter
+      - register
+
+  cocotb:
+    files:
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/manInTheMiddle/tb/ctrl_attacker_test.py : {file_type : user, copyto : .}
+    depend:
+      - vlog_tb_utils
+
+  basys3:
+    file_type: xdc
+    files:
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/manInTheMiddle/constraints/basys3_ctrl_attacker.xdc
+
+  rtl_docker:
+    file_type: verilogSource
+    files:
+      - /work/manInTheMiddle/hdl/ctrl_attacker.sv
+      - /work/manInTheMiddle/hdl/attack_mode_0.sv
+      - /work/manInTheMiddle/hdl/attack_mode_1.sv
+      - /work/manInTheMiddle/hdl/attack_mode_2.sv
+      - /work/manInTheMiddle/hdl/attack_mode_3.sv
+    depend:
+      - stack
+      - counter
+      - register
+
+  cocotb_docker:
+    files:
+      - /work/manInTheMiddle/tb/ctrl_attacker_test.py : {file_type : user, copyto : .}
+    depend:
+      - vlog_tb_utils
+
+  basys3_docker:
+    file_type: xdc
+    files:
+      - /work/manInTheMiddle/constraints/basys3_ctrl_attacker.xdc
+
+

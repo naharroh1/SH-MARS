@@ -1,0 +1,168 @@
+CAPI=2:
+
+name : ::top_dynamixel:0
+description : top_dynamixel
+
+
+targets :
+  synth_sv_basys3 :
+
+    toplevel  : top
+
+    filesets  :
+      - wb_intercon_dep
+      - rtl_top
+      - basys3
+
+    parameters:
+     - F_MHZ=100
+     - BAUDIOS=1000000
+     - UART_FIFO_DEPTH=16
+     - UART_WB_ADDR_SIZE=32
+     - UART_WB_ADDR=0x400
+     - SDSPI_WB_ADDR_SIZE=32
+     - SDSPI_WB_ADDR=0x200
+     - WB_DATA=32
+     
+
+    generate :
+      - wb_intercon : {output_file: wb_intercon_top.v}
+
+    default_tool : vivado
+
+    tools:
+      vivado:
+        part : xc7a35tcpg236-1
+
+  synt_sv_basys3_docker :
+
+    toplevel  : top
+
+    filesets  :
+      - wb_intercon_dep_docker
+      - rtl_top_docker
+      - basys3_docker
+
+    parameters:
+     - F_MHZ=100
+     - BAUDIOS=1000000
+     - UART_FIFO_DEPTH=16
+     - UART_WB_ADDR_SIZE=32
+     - UART_WB_ADDR=0x400
+     - SDSPI_WB_ADDR_SIZE=32
+     - SDSPI_WB_ADDR=0x200
+     - WB_DATA=32
+     
+
+    generate :
+      - wb_intercon
+
+    default_tool : vivado
+
+    tools:
+      vivado:
+        part : xc7a35tcpg236-1
+
+filesets :
+   rtl_top :
+
+    depend :
+      - uart_half_duplex_wb 
+      - sdspi_wb 
+      - ctrl_dynamixel_v2
+      - uart_wb
+
+    file_type : verilogSource
+
+    files :
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/top/hdl/top.sv
+
+
+
+
+   basys3 :
+    file_type : xdc
+    files :
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/top/constraints/basys3_top.xdc
+
+   wb_intercon_dep:
+    depend:
+      [wb_intercon]
+
+   rtl_top_docker :
+
+    depend :
+      - uart_half_duplex_wb 
+      - sdspi_wb 
+      - ctrl_dynamixel_v2
+      - uart_wb
+
+    file_type : verilogSource
+
+    files :
+      - /work/top/hdl/top.sv
+
+
+
+
+   basys3_docker :
+    file_type : xdc
+    files :
+      - /work/top/constraints/basys3_top.xdc
+
+   wb_intercon_dep_docker:
+    depend:
+      [wb_intercon]
+
+
+parameters:
+  F_MHZ :
+    datatype : int
+    paramtype : generic
+  BAUDIOS :
+    datatype : int
+    paramtype : generic
+  UART_FIFO_DEPTH :
+    datatype : int
+    paramtype : generic
+  UART_WB_ADDR_SIZE :
+    datatype : int
+    paramtype : generic
+  UART_WB_ADDR :
+    datatype : int
+    paramtype : generic
+  SDSPI_WB_ADDR_SIZE :
+    datatype : int
+    paramtype : generic
+  SDSPI_WB_ADDR :
+    datatype : int
+    paramtype : generic
+  WB_DATA :
+    datatype : int
+    paramtype : generic
+
+generate:
+  wb_intercon:
+    generator : wb_intercon_gen
+    parameters:
+      masters:
+        ctrl:
+          slaves:
+            - uart 
+            - sdspi 
+
+      slaves:
+        uart:
+          datawidth: 32
+          offset : 0x400
+          size : 16
+
+        sdspi:
+          datawidth: 32
+          offset: 0x200
+          size: 16 
+
+        
+
+        
+

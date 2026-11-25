@@ -1,0 +1,134 @@
+CAPI=2:
+
+name : ::uart_half_duplex_wb:1
+description : uart_half_duplex_wb 
+
+
+targets:
+  default:
+    filesets:
+      - rtl
+
+  synt_sv_basys3:
+    default_tool: vivado
+    filesets:
+      - rtl
+      - basys3
+    parameters:
+      - BAUDIOS=1000000
+      - F_MHZ=100
+      - FIFO_DEPTH=16
+      - WB_ADDR_DIR=8
+      - WB_DATA_WIDTH=8
+    toplevel: uart_half_duplex_wb
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+
+  sim:
+    flow : sim
+    flow_options:
+      tool : icarus 
+      iverilog_options : [-g2012]
+      cocotb_module : uart_half_duplex_wb_test
+      timescale : 1ns/1ns
+      vcs_options : [-timescale=1ns/1ns] 
+    filesets : [rtl, cocotb]
+    toplevel : uart_half_duplex_wb 
+    parameters :
+      - BAUDIOS=1000000
+      - F_MHZ=100
+      - FIFO_DEPTH=16
+      - WB_ADDR_DIR=8
+      - WB_DATA_WIDTH=8
+
+  synt_sv_basys3_docker:
+    default_tool: vivado
+    filesets:
+      - rtl_docker
+      - basys3_docker
+    parameters:
+      - BAUDIOS=1000000
+      - F_MHZ=100
+      - FIFO_DEPTH=16
+      - WB_ADDR_DIR=8
+      - WB_DATA_WIDTH=8
+    toplevel: uart_half_duplex_wb
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+
+  sim_docker:
+    flow : sim
+    flow_options:
+      tool : icarus 
+      iverilog_options : [-g2012]
+      cocotb_module : uart_half_duplex_wb_test
+      timescale : 1ns/1ns
+      vcs_options : [-timescale=1ns/1ns] 
+    filesets : [rtl_docker, cocotb_docker]
+    toplevel : uart_half_duplex_wb 
+    parameters :
+      - BAUDIOS=1000000
+      - F_MHZ=100
+      - FIFO_DEPTH=16
+      - WB_ADDR_DIR=8
+      - WB_DATA_WIDTH=8
+
+parameters :
+  BAUDIOS :
+    datatype : int
+    paramtype : generic
+  F_MHZ :
+    datatype : int
+    paramtype : generic
+  FIFO_DEPTH :
+    datatype : int
+    paramtype : generic
+  WB_ADDR_DIR :
+    datatype : int
+    paramtype : generic
+  WB_DATA_WIDTH :
+    datatype : int
+    paramtype : generic
+
+filesets:
+
+  rtl:
+    file_type: verilogSource
+    files:
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/uart/hdl/uart_half_duplex_wb.sv
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/uart/hdl/uart_wb_bridge.sv
+    depend:
+      - uart_half_duplex_fifo 
+
+  cocotb:
+    files:
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/uart/tb/uart_half_duplex_wb_test.py : {file_type : user, copyto : .}
+    depend:
+      - vlog_tb_utils
+
+  basys3:
+    file_type: xdc
+    files:
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/uart/constraints/basys3_uart_half_duplex_wb.xdc
+
+  rtl_docker:
+    file_type: verilogSource
+    files:
+      - /work/uart/hdl/uart_half_duplex_wb.sv
+      - /work/uart/hdl/uart_wb_bridge.sv
+    depend:
+      - uart_half_duplex_fifo 
+
+  cocotb_docker:
+    files:
+      - /work/uart/tb/uart_half_duplex_wb_test.py : {file_type : user, copyto : .}
+    depend:
+      - vlog_tb_utils
+
+  basys3_docker:
+    file_type: xdc
+    files:
+      - /work/uart/constraints/basys3_uart_half_duplex_wb.xdc
+

@@ -1,0 +1,126 @@
+CAPI=2:
+
+name : ::sdspi_wb:1
+description : sdspi_wb 
+
+
+targets:
+  default:
+    filesets:
+      - rtl
+
+  synt_sv_basys3:
+    default_tool: vivado
+    filesets:
+      - rtl
+      - basys3
+    parameters:
+      - CLK_FQ_KHZ=100
+      - WB_ADDR_DIR=8
+      - WB_DATA_WIDTH=8
+      - OFFSET_ADDR=1
+    toplevel: sdspi_wb
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+
+  sim:
+    flow : sim
+    flow_options:
+      tool : icarus 
+      iverilog_options : [-g2012]
+      cocotb_module : sdspi_test
+      timescale : 1ns/1ns
+      vcs_options : [-timescale=1ns/1ns] 
+    filesets : [rtl, cocotb]
+    toplevel : sdspi_wb 
+    parameters :
+      - CLK_FQ_KHZ=100
+      - WB_ADDR_DIR=8
+      - WB_DATA_WIDTH=8
+
+  synt_sv_basys3_docker:
+    default_tool: vivado
+    filesets:
+      - rtl_docker
+      - basys3_docker
+    parameters:
+      - CLK_FQ_KHZ=100
+      - WB_ADDR_DIR=8
+      - WB_DATA_WIDTH=8
+      - OFFSET_ADDR=1
+    toplevel: sdspi_wb
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+
+  sim_docker:
+    flow : sim
+    flow_options:
+      tool : icarus 
+      iverilog_options : [-g2012]
+      cocotb_module : sdspi_test
+      timescale : 1ns/1ns
+      vcs_options : [-timescale=1ns/1ns] 
+    filesets : [rtl_docker, cocotb_docker]
+    toplevel : sdspi_wb 
+    parameters :
+      - CLK_FQ_KHZ=100
+      - WB_ADDR_DIR=8
+      - WB_DATA_WIDTH=8
+
+parameters :
+  CLK_FQ_KHZ :
+    datatype : int
+    paramtype : generic
+  WB_ADDR_DIR :
+    datatype : int
+    paramtype : generic
+  WB_DATA_WIDTH :
+    datatype : int
+    paramtype : generic
+  OFFSET_ADDR :
+    datatype : int
+    paramtype : generic
+
+filesets:
+
+  rtl:
+    file_type: verilogSource
+    files:
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/sdspi/hdl/sdspi_wb.sv
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/sdspi/hdl/sdspi_wb_bridge.sv
+    depend:
+      - sdspi 
+
+  cocotb:
+    files:
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/sdspi/tb/sdspi_wb_test.py : {file_type : user, copyto : .}
+    depend:
+      - vlog_tb_utils
+
+  basys3:
+    file_type: xdc
+    files:
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/sdspi/constraints/basys3_sdspi_wb.xdc
+
+  rtl_docker:
+    file_type: verilogSource
+    files:
+      - /work/sdspi/hdl/sdspi_wb.sv
+      - /work/sdspi/hdl/sdspi_wb_bridge.sv
+    depend:
+      - sdspi 
+
+  cocotb_docker:
+    files:
+      - /work/sdspi/tb/sdspi_wb_test.py : {file_type : user, copyto : .}
+    depend:
+      - vlog_tb_utils
+
+  basys3_docker:
+    file_type: xdc
+    files:
+      - /work/sdspi/constraints/basys3_sdspi_wb.xdc
+
+

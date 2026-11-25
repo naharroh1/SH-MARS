@@ -1,0 +1,194 @@
+CAPI=2:
+
+name : ::system_dynamixel_performance:0
+description : system_dynamixel_performance
+
+
+targets :
+  synth_sv_basys3 :
+
+    toplevel  : system_performance 
+
+    filesets  :
+      - rtl_top
+      - basys3
+
+    parameters:
+     - F_MHZ=100
+     - BAUDIOS=1000000
+     - TOP_UART_FIFO_DEPTH=16
+     - TOP_UART_WB_ADDR_SIZE=32
+     - TOP_UART_WB_ADDR=0x400
+     - TOP_SDSPI_WB_ADDR_SIZE=32
+     - TOP_SDSPI_WB_ADDR=0x200
+     - TOP_WB_DATA=32
+     - MITM_UART_FIFO_DEPTH=16
+     - MITM_UART_CAPTURER_WB_ADDR_SIZE=8
+     - MITM_UART_CAPTURER_WB_ADDR=0x200
+     - MITM_UART_SERVO_WB_ADDR_SIZE=8
+     - MITM_UART_SERVO_WB_ADDR=0x400
+     - MITM_IMPOSTOR_WB_ADDR_SIZE=8
+     - MITM_IMPOSTOR_WB_ADDR=0x600
+     - MITM_SHAPER_WB_ADDR_SIZE=8
+     - MITM_SHAPER_WB_ADDR=0x800
+     - MITM_MAX_NUM_PARAMETERS_ALLOWED=8
+     - MITM_FILE_MEM=/home/germancq/estancia_huelva/dynamixel_SV_wishbone/dynamixel/memory.mem
+     - MITM_SHAPER_FILE_MEM=/home/germancq/estancia_huelva/dynamixel_SV_wishbone/manInTheMiddle/memory.mem
+     - MITM_WB_DATA=32
+     
+
+
+    default_tool : vivado
+
+    tools:
+      vivado:
+        part : xc7a35tcpg236-1
+
+  synt_sv_basys3_docker :
+
+    toplevel  : system_performance 
+
+    filesets  :
+      - rtl_top_docker
+      - basys3_docker
+
+    parameters:
+     - F_MHZ=100
+     - BAUDIOS=1000000
+     - TOP_UART_FIFO_DEPTH=16
+     - TOP_UART_WB_ADDR_SIZE=32
+     - TOP_UART_WB_ADDR=0x400
+     - TOP_SDSPI_WB_ADDR_SIZE=32
+     - TOP_SDSPI_WB_ADDR=0x200
+     - TOP_WB_DATA=32
+     - MITM_UART_FIFO_DEPTH=16
+     - MITM_UART_CAPTURER_WB_ADDR_SIZE=8
+     - MITM_UART_CAPTURER_WB_ADDR=0x200
+     - MITM_UART_SERVO_WB_ADDR_SIZE=8
+     - MITM_UART_SERVO_WB_ADDR=0x400
+     - MITM_IMPOSTOR_WB_ADDR_SIZE=8
+     - MITM_IMPOSTOR_WB_ADDR=0x600
+     - MITM_SHAPER_WB_ADDR_SIZE=8
+     - MITM_SHAPER_WB_ADDR=0x800
+     - MITM_MAX_NUM_PARAMETERS_ALLOWED=8
+     - MITM_FILE_MEM=/work/dynamixel/memory.mem
+     - MITM_SHAPER_FILE_MEM=/work/manInTheMiddle/memory.mem
+     - MITM_WB_DATA=32
+     
+
+    default_tool : vivado
+
+    tools:
+      vivado:
+        part : xc7a35tcpg236-1
+
+filesets :
+   rtl_top :
+
+    depend :
+      - top_attacker 
+      - top_dynamixel_performance
+
+    file_type : verilogSource
+
+    files :
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/system/hdl/system_performance.sv
+
+
+
+
+   basys3 :
+    file_type : xdc
+    files :
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/system/constraints/basys3_top.xdc
+
+
+   rtl_top_docker :
+
+    depend :
+      - top_attacker 
+      - top_dynamixel_performance
+
+    file_type : verilogSource
+
+    files :
+      - /work/system/hdl/system_performance.sv
+
+
+
+
+   basys3_docker :
+    file_type : xdc
+    files :
+      - /work/system/constraints/basys3_top.xdc
+
+
+parameters:
+  F_MHZ :
+    datatype : int
+    paramtype : vlogparam
+  BAUDIOS :
+    datatype : int
+    paramtype : vlogparam
+  TOP_UART_FIFO_DEPTH :
+    datatype : int
+    paramtype : vlogparam
+  TOP_UART_WB_ADDR_SIZE :
+    datatype : int
+    paramtype : vlogparam
+  TOP_UART_WB_ADDR :
+    datatype : int
+    paramtype : vlogparam
+  TOP_SDSPI_WB_ADDR_SIZE :
+    datatype : int
+    paramtype : vlogparam
+  TOP_SDSPI_WB_ADDR :
+    datatype : int
+    paramtype : vlogparam
+  TOP_WB_DATA :
+    datatype : int
+    paramtype : vlogparam
+  MITM_UART_FIFO_DEPTH :
+    datatype : int
+    paramtype : vlogparam
+  MITM_UART_CAPTURER_WB_ADDR_SIZE :
+    datatype : int
+    paramtype : vlogparam
+  MITM_UART_CAPTURER_WB_ADDR :
+    datatype : int
+    paramtype : vlogparam
+  MITM_UART_SERVO_WB_ADDR_SIZE :
+    datatype : int
+    paramtype : vlogparam
+  MITM_UART_SERVO_WB_ADDR :
+    datatype : int
+    paramtype : vlogparam
+  MITM_IMPOSTOR_WB_ADDR_SIZE :
+    datatype : int
+    paramtype : vlogparam
+  MITM_IMPOSTOR_WB_ADDR :
+    datatype : int
+    paramtype : vlogparam
+  MITM_SHAPER_WB_ADDR_SIZE :
+    datatype : int
+    paramtype : vlogparam
+  MITM_SHAPER_WB_ADDR :
+    datatype : int
+    paramtype : vlogparam
+  MITM_MAX_NUM_PARAMETERS_ALLOWED :
+    datatype : int
+    paramtype : vlogparam
+  MITM_FILE_MEM :
+    datatype : file
+    paramtype : vlogparam
+  MITM_SHAPER_FILE_MEM :
+    datatype : file 
+    paramtype : vlogparam
+  MITM_WB_DATA :
+    datatype : int
+    paramtype : vlogparam
+
+        
+
+        
+

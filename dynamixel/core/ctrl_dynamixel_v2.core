@@ -1,0 +1,123 @@
+CAPI=2:
+
+name : ::ctrl_dynamixel_v2:1
+description : ctrl_dynamixel_v2 
+
+
+targets:
+  default:
+    filesets:
+      - rtl
+
+  synt_sv_basys3:
+    default_tool: vivado
+    filesets:
+      - rtl
+      - basys3
+    parameters:
+      - WB_DATA=32
+      - UART_WB_ADDR=400
+      - SDSPI_WB_ADDR=800
+    toplevel: ctrl_dynamixel
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+
+  sim:
+    flow : sim
+    flow_options:
+      tool : icarus 
+      iverilog_options : [-g2012]
+      cocotb_module : ctrl_dynamixel_test
+      timescale : 1ns/1ns
+      vcs_options : [-timescale=1ns/1ns] 
+    filesets : [rtl, cocotb]
+    toplevel : ctrl_dynamixel 
+    parameters :
+      - WB_DATA=32
+      - UART_WB_ADDR=400
+      - SDSPI_WB_ADDR=800
+
+  synt_sv_basys3_docker:
+    default_tool: vivado
+    filesets:
+      - rtl_docker
+      - basys3_docker
+    parameters:
+      - WB_DATA=32
+      - UART_WB_ADDR=400
+      - SDSPI_WB_ADDR=800
+    toplevel: ctrl_dynamixel
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+
+  sim_docker:
+    flow : sim
+    flow_options:
+      tool : icarus 
+      iverilog_options : [-g2012]
+      cocotb_module : ctrl_dynamixel_test
+      timescale : 1ns/1ns
+      vcs_options : [-timescale=1ns/1ns] 
+    filesets : [rtl_docker, cocotb_docker]
+    toplevel : ctrl_dynamixel 
+    parameters :
+      - WB_DATA=32
+      - UART_WB_ADDR=400
+      - SDSPI_WB_ADDR=800
+
+parameters :
+  WB_DATA :
+    datatype : int
+    paramtype : generic
+  UART_WB_ADDR :
+    datatype : int
+    paramtype : generic
+  SDSPI_WB_ADDR :
+    datatype : int
+    paramtype : generic
+
+filesets:
+
+  rtl:
+    file_type: verilogSource
+    files:
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/dynamixel/hdl/ctrl_dynamixel_v2.sv
+    depend:
+      - stack
+      - counter
+      - register
+
+  cocotb:
+    files:
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/dynamixel/tb/ctrl_dynamixel_v2_test.py : {file_type : user, copyto : .}
+    depend:
+      - vlog_tb_utils
+
+  basys3:
+    file_type: xdc
+    files:
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/dynamixel/constraints/basys3_ctrl_dynamixel.xdc
+
+  rtl_docker:
+    file_type: verilogSource
+    files:
+      - /work/dynamixel/hdl/ctrl_dynamixel_v2.sv
+    depend:
+      - stack
+      - counter
+      - register
+
+  cocotb_docker:
+    files:
+      - /work/dynamixel/tb/ctrl_dynamixel_v2_test.py : {file_type : user, copyto : .}
+    depend:
+      - vlog_tb_utils
+
+  basys3_docker:
+    file_type: xdc
+    files:
+      - /work/dynamixel/constraints/basys3_ctrl_dynamixel.xdc
+
+

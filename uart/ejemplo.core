@@ -1,0 +1,106 @@
+CAPI=2:
+
+name : ::ejemplo:1
+description : ejemplo 
+
+
+targets:
+  default:
+    filesets:
+      - rtl
+
+  synt_sv_basys3:
+    default_tool: vivado
+    filesets:
+      - rtl
+      - basys3
+    toplevel: ejemplo
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+
+  synt_vhdl_basys3:
+    default_tool: vivado
+    filesets:
+      - rtl_vhdl
+      - basys3
+    toplevel: top_conexion_dynamixel 
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+
+  synt_sv_basys3_docker:
+    default_tool: vivado
+    filesets:
+      - rtl_docker
+      - basys3_docker
+    toplevel: ejemplo
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+
+  synt_vhdl_basys3_docker:
+    default_tool: vivado
+    filesets:
+      - rtl_vhdl_docker
+      - basys3_docker
+    toplevel: top_conexion_dynamixel 
+    tools:
+      vivado:
+        part: xc7a35tcpg236-1
+
+filesets:
+
+  rtl:
+    file_type: verilogSource
+    files:
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/uart/ejemplo.sv
+    depend:
+      - uart
+      - uart_half_duplex 
+      - uart_half_duplex_fifo
+
+  rtl_vhdl:
+    file_type: vhdlSource
+    files:
+      - /home/germancq/estancia_huelva/dynamxel_vhdl/uart/rtl/uart.vhd
+      - /home/germancq/estancia_huelva/dynamxel_vhdl/uart/rtl/UART_RX.vhd
+      - /home/germancq/estancia_huelva/dynamxel_vhdl/uart/rtl/UART_TX.vhd
+      - /home/germancq/estancia_huelva/dynamxel_vhdl/uart/rtl/uart_half.vhd
+      - /home/germancq/estancia_huelva/dynamxel_vhdl/uart/rtl/half_duplex.vhd
+      - /home/germancq/estancia_huelva/dynamxel_vhdl/uart/rtl/uart_ocupado.vhd
+      - /home/germancq/estancia_huelva/dynamxel_vhdl/uart/rtl/top_uart.vhd
+      - /home/germancq/estancia_huelva/dynamxel_vhdl/top_conexion_dynamixel.vhd
+
+
+  basys3:
+    file_type: xdc
+    files:
+      - /home/germancq/estancia_huelva/dynamixel_SV_wishbone/uart/basys3_ejemplo.xdc
+
+  rtl_docker:
+    file_type: verilogSource
+    files:
+      - /work/uart/ejemplo.sv
+    depend:
+      - uart
+      - uart_half_duplex 
+      - uart_half_duplex_fifo
+
+  rtl_vhdl_docker:
+    file_type: vhdlSource
+    files:
+      - /work_vhdl/uart/rtl/uart.vhd
+      - /work_vhdl/uart/rtl/UART_RX.vhd
+      - /work_vhdl/uart/rtl/UART_TX.vhd
+      - /work_vhdl/uart/rtl/uart_half.vhd
+      - /work_vhdl/uart/rtl/half_duplex.vhd
+      - /work_vhdl/uart/rtl/uart_ocupado.vhd
+      - /work_vhdl/uart/rtl/top_uart.vhd
+      - /work_vhdl/top_conexion_dynamixel.vhd
+
+
+  basys3_docker:
+    file_type: xdc
+    files:
+      - /work/uart/basys3_ejemplo.xdc
